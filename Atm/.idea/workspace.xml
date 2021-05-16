@@ -6,7 +6,6 @@
       <change beforePath="$PROJECT_DIR$/src/application/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/atm/Atm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/atm/Atm.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bank/BankAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bank/BankAccount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/users.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/users.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

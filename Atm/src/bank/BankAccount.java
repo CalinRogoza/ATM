@@ -50,42 +50,60 @@ public class BankAccount {
     }
 
     public boolean withdrawAmount(double quantity, String currency) {
-        if (quantity <= 0 || currency.equals("")) {
+        System.out.println("WITHDRAWING>>");
+        if (quantity <= 0) {
+            System.err.println("Ati introdus o valoare gresita pentru suma.");
             return false;
         }
         switch (currency) {
             case "ron":
-                if (this.ron > quantity) {
+                if (this.ron >= quantity) {
                     this.ron -= quantity;
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 }
+                else {
+                    System.err.println("Fonduri insuficiente.");
+                }
                 break;
             case "€":
-                if (this.euro > quantity) {
+                if (this.euro >= quantity) {
                     this.euro -= quantity;
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 }
+                else {
+                    System.err.println("Fonduri insuficiente.");
+                }
                 break;
             case "£":
-                if (this.pounds > quantity) {
+                if (this.pounds >= quantity) {
                     this.pounds -= quantity;
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 }
+                else {
+                    System.err.println("Fonduri insuficiente.");
+                }
                 break;
             case "$":
-                if (this.dollar > quantity) {
+                if (this.dollar >= quantity) {
                     this.dollar -= quantity;
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 }
+                else {
+                    System.err.println("Fonduri insuficiente.");
+                }
                 break;
+            default:
+                System.err.println("Valuta inexistenta!");
+                System.err.flush();
+                return false;
         }
         return false;
     }

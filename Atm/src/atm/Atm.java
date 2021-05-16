@@ -139,8 +139,10 @@ public class Atm {
                     return false;
                 }
                 return true;
+            default:
+                System.err.println("Valuta inexistenta!");
+                return false;
         }
-        return false;
     }
 
     public void run() {
@@ -150,7 +152,7 @@ public class Atm {
         if (answer) {
             //introducere id si pin
             BankAccount bankAccount = getAccountWithCredentials();
-            System.out.println(bankAccount);
+            System.out.println("CONT BANCA :" + bankAccount);
             if (bankAccount != null) {
                 int chosenOption = getActionsForExistingClient();
                 switch (chosenOption) {
@@ -162,10 +164,17 @@ public class Atm {
                         System.out.println("Introduceti suma si valuta: ");
                         String amountToBeWithdrawn = scanner.nextLine().toLowerCase(); //100 $
                         String[] currencyTokens = amountToBeWithdrawn.split(" ");
-                        int amount = Integer.parseInt(currencyTokens[0]);
-                        String currency = currencyTokens[1];
-                        if (isSufficientAmount(amount, currency)){
-                            bankAccount.withdrawAmount(amount,currency);
+                        try {
+                            int amount = Integer.parseInt(currencyTokens[0]);
+                            String currency = currencyTokens[1];
+                            if (isSufficientAmount(amount, currency)) {
+                                if(bankAccount.withdrawAmount(amount, currency)){
+                                    System.out.println("Va rugam ridicati banii. La revedere!");
+                                }
+                            }
+                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                            System.err.println("Ati introdus datele intr-un format invalid.");
+                            System.err.flush();
                         }
                 }
             }
