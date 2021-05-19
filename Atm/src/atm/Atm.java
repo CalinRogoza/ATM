@@ -14,6 +14,8 @@ public class Atm {
     private final String ENTER_OPTION = "Introduceti optiunea dorita: ";
     private final String CANT_WITHDRAW_AMOUNT = "Nu se poate extrage aceasta suma.";
     private final String INVALID_CURRENCY = "Valuta inexistenta.";
+    private final String TAKE_MONEY = "Va rugam ridicati banii. La revedere!";
+    private final String FILE_READ_PROBLEM = "A aparut o problema la citirea fisierului.";
     private double defaultRonAmount = 1000.0d;
     private double defaultEuroAmount = 1000.0d;
     private double defaultPoundAmount = 1000.0d;
@@ -126,11 +128,30 @@ public class Atm {
                     System.out.println(line);
                 }
             } while (line != null);
-        }catch (IOException e){
-            System.err.println("A aparut o problema la citirea fisierului.");
+        } catch (IOException e) {
+            System.err.println(FILE_READ_PROBLEM);
+        } catch (NullPointerException e) {
+            // ultima linie a fisierului arunca exceptie
         }
-        catch (NullPointerException e) {
-            // sfarsit de fisier
+    }
+
+    private void adminUnlock(String id) {
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")))) {
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                String[] tokens = line.split(",");
+                if (tokens[0].equals(id)) {
+                    BankAccount bankAccount = new BankAccount(tokens[0], tokens[1], Boolean.parseBoolean(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
+                    String toBeReplaced = tokens[0] + "," + tokens[1] + ",false," + tokens[3] + "," + tokens[4] + "," + tokens[5] + "," + tokens[6];
+                    bankAccount.updateUserInConfigFile(tokens[0], toBeReplaced);
+                    break;
+                }
+                line = bufferedReader.readLine();
+            }
+        } catch (IOException e) {
+            System.err.println(FILE_READ_PROBLEM);
+        } catch (NullPointerException e) {
+            // ultima linie a fisierului arunca exceptie
         }
     }
 
@@ -138,7 +159,6 @@ public class Atm {
         String[] tokens = command.split(" ");
         switch (tokens[0]) {
             case "ADMIN_TRACE":
-                System.out.println("TRACE");
                 try {
                     adminTrace(tokens[1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -146,7 +166,11 @@ public class Atm {
                 }
                 break;
             case "ADMIN_UNLOCK":
-                System.out.println("unlock");
+                try {
+                    adminUnlock(tokens[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Numar invalid de argumente.");
+                }
                 break;
             case "ADMIN_ADD_MONEY":
                 try {
@@ -221,14 +245,17 @@ public class Atm {
         return pickedOption;
     }
 
-    private String[] getAccountDataById(String id, String pin) {
+    private String[] getAccountDataById(String id) {
         try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")));) {
             String line = bufferedReader.readLine();
             while (!line.equals("")) {
                 String[] tokens = line.split(",");
                 String currentId = tokens[0];
-                String currentPin = tokens[1];
-                if (currentId.equals(id) && currentPin.equals(pin)) {
+                if (currentId.equals(id) && tokens[2].equals("true")) {
+                    System.err.println("Acest cont este blocat.");
+                    return null;
+                }
+                if (currentId.equals(id)) {
                     return tokens;
                 }
                 line = bufferedReader.readLine();
@@ -243,19 +270,30 @@ public class Atm {
 
     private BankAccount getAccountWithCredentials() {
 //        scanner.nextLine();
+        int counter = 0;
         System.out.println("ID: ");
-        String searchedId = scanner.nextLine();
-        System.out.println("PIN: ");
-        String searchedPin = scanner.nextLine();
-        System.out.println(searchedId + " " + searchedPin);
-        String[] accountDataTokens = getAccountDataById(searchedId, searchedPin);
+        String searchedId = scanner.nextLine();//aici fac getAccountDataById si apoi while cu pin ul introdus
+
+        String[] accountDataTokens = getAccountDataById(searchedId);
         if (accountDataTokens != null) {
             boolean blockedStatus = Boolean.parseBoolean(accountDataTokens[2]);
             double ronCurrencyValue = Double.parseDouble(accountDataTokens[3]);
             double euroCurrencyValue = Double.parseDouble(accountDataTokens[4]);
             double poundCurrencyValue = Double.parseDouble(accountDataTokens[5]);
             double dollarCurrencyValue = Double.parseDouble(accountDataTokens[6]);
-            return new BankAccount(accountDataTokens[0], accountDataTokens[1], blockedStatus, ronCurrencyValue, euroCurrencyValue, poundCurrencyValue, dollarCurrencyValue);
+            BankAccount bankAccount = new BankAccount(accountDataTokens[0], accountDataTokens[1], blockedStatus, ronCurrencyValue, euroCurrencyValue, poundCurrencyValue, dollarCurrencyValue);
+            while (counter < 3) {
+                System.out.println("PIN: ");
+                String searchedPin = scanner.nextLine();
+                System.out.println(searchedId + " " + searchedPin);
+                ++counter;
+                if (searchedPin.equals(accountDataTokens[1])) {
+                    return bankAccount;
+                }
+            }
+            String toBeReplaced = accountDataTokens[0] + "," + accountDataTokens[1] + "," + "true," + accountDataTokens[3] + "," + accountDataTokens[4] + "," + accountDataTokens[5] + "," + accountDataTokens[6];
+            bankAccount.updateUserInConfigFile(accountDataTokens[0], toBeReplaced);
+            System.err.println("Contul a fost blocat.");
         }
         return null;
     }
@@ -307,7 +345,7 @@ public class Atm {
             int amount = Integer.parseInt(currencyTokens[0]);
             String currency = currencyTokens[1];
             if (isSufficientAmount(amount, currency)) {
-                System.out.println("Va rugam ridicati banii. La revedere!");
+                System.out.println(TAKE_MONEY);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Ati introdus datele intr-un format invalid.");
@@ -334,7 +372,7 @@ public class Atm {
             String currency = currencyTokens[1];
             if (isSufficientAmount(amount, currency)) {
                 if (bankAccount.withdrawAmount(amount, currency)) {
-                    System.out.println("Va rugam ridicati banii. La revedere!");
+                    System.out.println(TAKE_MONEY);
                 }
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -415,7 +453,7 @@ public class Atm {
             int amount = Integer.parseInt(currencyTokens[0]);
             String currency = currencyTokens[1];
             if (isExchangePossible(amount, currency)) {
-                System.out.println("Va rugam ridicati banii. La revedere!");
+                System.out.println(TAKE_MONEY);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Ati introdus datele intr-un format invalid.");
@@ -479,6 +517,6 @@ public class Atm {
             }
             writeLogToFile("unregistered user | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
         }
-        scanner.close();
+//        scanner.close();
     }
 }

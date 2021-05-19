@@ -11,7 +11,9 @@ public class App {
 //        bankAccount.updateUserInConfigFile("123", "fafafa");
 
         Atm atm = new Atm();
-        atm.run();
+        while (true) {
+            atm.run();
+        }
 
 
 //        String filePath = new File(".").getCanonicalPath() + "/src/users.txt";
