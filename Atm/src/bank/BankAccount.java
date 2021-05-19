@@ -50,7 +50,7 @@ public class BankAccount {
     }
 
     public boolean withdrawAmount(double quantity, String currency) {
-        System.out.println("WITHDRAWING>>");
+        System.out.println("WITHDRAWING>>");//aici as putea sa updatez mereu userul dupa switch()
         if (quantity <= 0) {
             System.err.println("Ati introdus o valoare gresita pentru suma.");
             return false;
@@ -62,8 +62,7 @@ public class BankAccount {
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
-                }
-                else {
+                } else {
                     System.err.println("Fonduri insuficiente.");
                 }
                 break;
@@ -73,8 +72,7 @@ public class BankAccount {
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
-                }
-                else {
+                } else {
                     System.err.println("Fonduri insuficiente.");
                 }
                 break;
@@ -84,8 +82,7 @@ public class BankAccount {
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
-                }
-                else {
+                } else {
                     System.err.println("Fonduri insuficiente.");
                 }
                 break;
@@ -95,8 +92,7 @@ public class BankAccount {
                     String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
-                }
-                else {
+                } else {
                     System.err.println("Fonduri insuficiente.");
                 }
                 break;
@@ -108,16 +104,34 @@ public class BankAccount {
         return false;
     }
 
+    public void depositAmount(int amount, String currency) {
+        System.out.println("DEPOSITING>>>");
+        switch (currency) {
+            case "ron":
+                this.ron += amount;
+                break;
+            case "$":
+                this.dollar += amount;
+                break;
+            case "£":
+                this.pounds += amount;
+                break;
+            case "€":
+                this.euro += amount;
+                break;
+        }
+        String toBeReplaced = id + "," + pin + "," + blocked + "," + ron + "," + euro + "," + pounds + "," + dollar;
+        updateUserInConfigFile(this.id, toBeReplaced);
+    }
+
     @Override
     public String toString() {
-        return "BankAccount{" +
-                "id='" + id + '\'' +
+        return "id='" + id + '\'' +
                 ", pin='" + pin + '\'' +
                 ", blocked=" + blocked +
                 ", ron=" + ron +
                 ", euro=" + euro +
                 ", lire=" + pounds +
-                ", dollar=" + dollar +
-                '}';
+                ", dollar=" + dollar;
     }
 }

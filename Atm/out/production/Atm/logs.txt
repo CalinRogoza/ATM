@@ -1,0 +1,14 @@
+BankAccount{id='123', pin='1234', blocked=false, ron=424.0, euro=100.0, lire=110.0, dollar=200.0} + 1100ron
+BankAccount{id='123', pin='1234', blocked=false, ron=524.0, euro=100.0, lire=110.0, dollar=200.0} + 2+100ron
+unregistered user
+id='045', pin='2345', blocked=false, ron=1000.0, euro=120.0, lire=100.0, dollar=100.0 + 0
+unregistered user+0+100+r
+unregistered user sss
+id='123', pin='1234', blocked=false, ron=524.0, euro=100.0, lire=110.0, dollar=200.0 2,500orn
+unregistered user + 0,100ron
+unregistered user + 1,100r
+unregistered user + 0,200£
+id='123', pin='1234', blocked=false, ron=524.0, euro=100.0, lire=110.0, dollar=200.0+2,[1000£]
+id='123', pin='1234', blocked=false, ron=1524.0, euro=100.0, lire=110.0, dollar=200.0+2,[1000, ron]
+id='123', pin='1234', blocked=false, ron=1524.0, euro=100.0, lire=110.0, dollar=200.0+2,[100ron]
+unregistered user + 2,[]
