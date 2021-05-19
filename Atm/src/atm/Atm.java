@@ -116,11 +116,34 @@ public class Atm {
         }
     }
 
+    private void adminTrace(String id) {
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/logs.txt")))) {
+            String line;
+            do {
+                line = bufferedReader.readLine();
+                String[] tokens = line.split(",");
+                if (tokens[0].equals(id)) {
+                    System.out.println(line);
+                }
+            } while (line != null);
+        }catch (IOException e){
+            System.err.println("A aparut o problema la citirea fisierului.");
+        }
+        catch (NullPointerException e) {
+            // sfarsit de fisier
+        }
+    }
+
     private void verifyAdminCommand(String command) {
         String[] tokens = command.split(" ");
         switch (tokens[0]) {
             case "ADMIN_TRACE":
                 System.out.println("TRACE");
+                try {
+                    adminTrace(tokens[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Numar invalid de argumente.");
+                }
                 break;
             case "ADMIN_UNLOCK":
                 System.out.println("unlock");
@@ -354,6 +377,51 @@ public class Atm {
         }
     }
 
+    private boolean isExchangePossible(int amount, String currency) {
+        switch (currency) {
+            case "$":
+                if (this.defaultRonAmount >= amount * dollarExchangeRate) {
+                    this.defaultDollarAmount += amount;
+                    this.defaultRonAmount -= amount * dollarExchangeRate;
+                    System.out.println("Ati primit " + amount * dollarExchangeRate + " lei.");
+                    return true;
+                }
+                break;
+            case "£":
+                if (this.defaultRonAmount >= amount * poundExchangeRate) {
+                    this.defaultPoundAmount += amount;
+                    this.defaultRonAmount -= amount * poundExchangeRate;
+                    System.out.println("Ati primit " + amount * poundExchangeRate + " lei.");
+                    return true;
+                }
+                break;
+            case "€":
+                if (this.defaultRonAmount >= amount * euroExchangeRate) {
+                    this.defaultEuroAmount += amount;
+                    this.defaultRonAmount -= amount * euroExchangeRate;
+                    System.out.println("Ati primit " + amount * euroExchangeRate + " lei.");
+                    return true;
+                }
+                break;
+            default:
+                System.err.println(INVALID_CURRENCY);
+                return false;
+        }
+        return false;
+    }
+
+    private void performExchange(String[] currencyTokens) {
+        try {
+            int amount = Integer.parseInt(currencyTokens[0]);
+            String currency = currencyTokens[1];
+            if (isExchangePossible(amount, currency)) {
+                System.out.println("Va rugam ridicati banii. La revedere!");
+            }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.err.println("Ati introdus datele intr-un format invalid.");
+        }
+    }
+
     public void run() {
         loadExchangeRatesFromFile();
         System.out.println("Sunteti client al bancii noastre? (0/1)");
@@ -372,17 +440,22 @@ public class Atm {
                         System.out.println(bankAccount.checkBalance());
                         break;
                     case 1:
-                        String amountToBeWithdrawn = getAmountFromUser(); //100 $
-                        currencyTokens = amountToBeWithdrawn.split(" ");
+                        String amount = getAmountFromUser(); //100 $
+                        currencyTokens = amount.split(" ");
                         performWithdraw(currencyTokens, bankAccount);
                         break;
                     case 2:
-                        String amountToBeDeposited = getAmountFromUser();
-                        currencyTokens = amountToBeDeposited.split(" ");
+                        amount = getAmountFromUser();
+                        currencyTokens = amount.split(" ");
                         performDeposit(currencyTokens, bankAccount);
                         break;
+                    case 3:
+                        amount = getAmountFromUser();
+                        currencyTokens = amount.split(" ");
+                        performExchange(currencyTokens);
+                        break;
                 }
-                writeLogToFile(bankAccount.toString() + "+" + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
+                writeLogToFile(bankAccount.toString() + " | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
             }
         } else {
             int chosenOption = performActionsForIndirectClient(); //aici iau ce input da si scriu in logs
@@ -401,9 +474,10 @@ public class Atm {
                 case 2:
                     amount = getAmountFromUser();
                     currencyTokens = amount.split(" ");
+                    performExchange(currencyTokens);
                     break;
             }
-            writeLogToFile("unregistered user + " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
+            writeLogToFile("unregistered user | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
         }
         scanner.close();
     }

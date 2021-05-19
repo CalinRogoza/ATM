@@ -126,8 +126,8 @@ public class BankAccount {
 
     @Override
     public String toString() {
-        return "id='" + id + '\'' +
-                ", pin='" + pin + '\'' +
+        return id +
+                ", pin=" + pin +
                 ", blocked=" + blocked +
                 ", ron=" + ron +
                 ", euro=" + euro +
