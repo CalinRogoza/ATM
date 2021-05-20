@@ -130,12 +130,19 @@ public class Atm {
         }
     }
 
-    private void adminUnlock(String id) {
+    private String reversePin(String pin) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(pin);
+        sb.reverse();
+        return sb.toString();
+    }
+
+    private void adminUnlock(String id, String adminPassword) {
         try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")))) {
             String line = bufferedReader.readLine();
             while (line != null) {
                 String[] tokens = line.split(",");
-                if (tokens[0].equals(id)) {
+                if (tokens[0].equals(id) && adminPassword.equals(reversePin(tokens[1]))) {
                     BankAccount bankAccount = new BankAccount(tokens[0], tokens[1], Boolean.parseBoolean(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
                     String toBeReplaced = tokens[0] + "," + tokens[1] + ",false," + tokens[3] + "," + tokens[4] + "," + tokens[5] + "," + tokens[6];
                     bankAccount.updateUserInConfigFile(tokens[0], toBeReplaced);
@@ -162,7 +169,7 @@ public class Atm {
                 break;
             case "ADMIN_UNLOCK":
                 try {
-                    adminUnlock(tokens[1]);
+                    adminUnlock(tokens[1], tokens[2]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Numar invalid de argumente.");
                 }
