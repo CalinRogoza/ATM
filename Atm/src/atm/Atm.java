@@ -26,7 +26,7 @@ public class Atm {
 
     private void verifyOption(int pickedOption) {
         if (pickedOption < 0 || pickedOption > 3) {
-            System.out.println("Ati introdus o optiune inexistenta. Tastati 0, 1, 2 sau 3.");
+            System.out.println(INVALID_OPTION);
         }
     }
 
@@ -47,12 +47,10 @@ public class Atm {
     private void writeLogToFile(String text) {
         try {
             String f1 = new File(".").getCanonicalPath() + "/src/logs.txt";
-
             FileWriter fileWritter = new FileWriter(f1, true);
             BufferedWriter bw = new BufferedWriter(fileWritter);
             bw.write(text);
             bw.close();
-            System.out.println("Done");
         } catch (IOException e) {
             System.err.println("Scrierea fisierului nu a putut fi efectuata.");
         }
@@ -178,7 +176,6 @@ public class Atm {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Numar invalid de argumente.");
                 }
-                System.out.println(this.defaultRonAmount);
                 break;
             case "ADMIN_WITHDRAW_MONEY":
                 System.out.println("withdraw");
@@ -187,7 +184,6 @@ public class Atm {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Numar invalid de argumente.");
                 }
-                System.out.println(this.defaultRonAmount);
                 break;
         }
     }
@@ -196,14 +192,14 @@ public class Atm {
         String answer = "";
         do {
             try {
-                answer = scanner.nextLine();//verifyadmincommand
+                answer = scanner.nextLine();
                 verifyAdminCommand(answer);
-                System.out.println("ANSWER " + answer);
                 if (!answer.equals("0") && !answer.equals("1")) {
                     throw new InputMismatchException();
                 }
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
+                System.out.println("???");
             }
         } while (!answer.equals("0") && !answer.equals("1"));
         return answer.equals("1");
@@ -220,7 +216,7 @@ public class Atm {
                 verifyOption(pickedOption);
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
-                scanner.next(); // se curata scanner-ul de input gresit
+                //scanner.next(); // se curata scanner-ul de input gresit
             }
         }
         while (pickedOption < 0 || pickedOption > 3);
@@ -238,7 +234,7 @@ public class Atm {
                 verifyOption(pickedOption);
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
-                scanner.next(); // se curata scanner-ul de input gresit
+                //scanner.next(); // se curata scanner-ul de input gresit
             }
         }
         while (pickedOption < 0 || pickedOption > 2);
@@ -268,12 +264,23 @@ public class Atm {
         return null;
     }
 
-    private BankAccount getAccountWithCredentials() {
-//        scanner.nextLine();
+    private boolean isThePasswordCorrect(String searchedId, String[] accountDataTokens) {
         int counter = 0;
-        System.out.println("ID: ");
-        String searchedId = scanner.nextLine();//aici fac getAccountDataById si apoi while cu pin ul introdus
+        while (counter < 3) {
+            System.out.println("PIN: ");
+            String searchedPin = scanner.nextLine();
+            System.out.println(searchedId + " " + searchedPin);
+            ++counter;
+            if (searchedPin.equals(accountDataTokens[1])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private BankAccount getAccountWithCredentials() {
+        System.out.println("ID: ");
+        String searchedId = scanner.nextLine();
         String[] accountDataTokens = getAccountDataById(searchedId);
         if (accountDataTokens != null) {
             boolean blockedStatus = Boolean.parseBoolean(accountDataTokens[2]);
@@ -282,18 +289,13 @@ public class Atm {
             double poundCurrencyValue = Double.parseDouble(accountDataTokens[5]);
             double dollarCurrencyValue = Double.parseDouble(accountDataTokens[6]);
             BankAccount bankAccount = new BankAccount(accountDataTokens[0], accountDataTokens[1], blockedStatus, ronCurrencyValue, euroCurrencyValue, poundCurrencyValue, dollarCurrencyValue);
-            while (counter < 3) {
-                System.out.println("PIN: ");
-                String searchedPin = scanner.nextLine();
-                System.out.println(searchedId + " " + searchedPin);
-                ++counter;
-                if (searchedPin.equals(accountDataTokens[1])) {
-                    return bankAccount;
-                }
+            if (isThePasswordCorrect(searchedId, accountDataTokens)) {
+                return bankAccount;
+            } else {
+                String toBeReplaced = accountDataTokens[0] + "," + accountDataTokens[1] + "," + "true," + accountDataTokens[3] + "," + accountDataTokens[4] + "," + accountDataTokens[5] + "," + accountDataTokens[6];
+                bankAccount.updateUserInConfigFile(accountDataTokens[0], toBeReplaced);
+                System.err.println("Contul a fost blocat.");
             }
-            String toBeReplaced = accountDataTokens[0] + "," + accountDataTokens[1] + "," + "true," + accountDataTokens[3] + "," + accountDataTokens[4] + "," + accountDataTokens[5] + "," + accountDataTokens[6];
-            bankAccount.updateUserInConfigFile(accountDataTokens[0], toBeReplaced);
-            System.err.println("Contul a fost blocat.");
         }
         return null;
     }
@@ -466,7 +468,6 @@ public class Atm {
         boolean answer = isClientOfTheBank();
 
         if (answer) {
-            //introducere id si pin
             BankAccount bankAccount = getAccountWithCredentials();
             System.out.println("CONT BANCA :" + bankAccount);
             int chosenOption;
@@ -478,7 +479,7 @@ public class Atm {
                         System.out.println(bankAccount.checkBalance());
                         break;
                     case 1:
-                        String amount = getAmountFromUser(); //100 $
+                        String amount = getAmountFromUser();
                         currencyTokens = amount.split(" ");
                         performWithdraw(currencyTokens, bankAccount);
                         break;
@@ -496,7 +497,7 @@ public class Atm {
                 writeLogToFile(bankAccount.toString() + " | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
             }
         } else {
-            int chosenOption = performActionsForIndirectClient(); //aici iau ce input da si scriu in logs
+            int chosenOption = performActionsForIndirectClient();
             String[] currencyTokens = new String[0];
             switch (chosenOption) {
                 case 0:
