@@ -3,10 +3,7 @@ package atm;
 import bank.BankAccount;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Atm {
     private final Scanner scanner = new Scanner(System.in);
@@ -16,10 +13,10 @@ public class Atm {
     private final String INVALID_CURRENCY = "Valuta inexistenta.";
     private final String TAKE_MONEY = "Va rugam ridicati banii. La revedere!";
     private final String FILE_READ_PROBLEM = "A aparut o problema la citirea fisierului.";
-    private double defaultRonAmount = 1000.0d;
-    private double defaultEuroAmount = 1000.0d;
-    private double defaultPoundAmount = 1000.0d;
-    private double defaultDollarAmount = 1000.0d;
+    private double defaultRonAmount = 100000.0d;
+    private double defaultEuroAmount = 10000.0d;
+    private double defaultPoundAmount = 10000.0d;
+    private double defaultDollarAmount = 10000.0d;
     private double euroExchangeRate;
     private double poundExchangeRate;
     private double dollarExchangeRate;
@@ -32,7 +29,7 @@ public class Atm {
 
     private void loadExchangeRatesFromFile() {
         try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/cursBNR.txt")))) {
-            ArrayList<String> lines = new ArrayList<>();
+            List<String> lines = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 lines.add(bufferedReader.readLine());
             }
@@ -199,7 +196,6 @@ public class Atm {
                 }
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
-                System.out.println("???");
             }
         } while (!answer.equals("0") && !answer.equals("1"));
         return answer.equals("1");
@@ -216,7 +212,6 @@ public class Atm {
                 verifyOption(pickedOption);
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
-                //scanner.next(); // se curata scanner-ul de input gresit
             }
         }
         while (pickedOption < 0 || pickedOption > 3);
@@ -234,7 +229,6 @@ public class Atm {
                 verifyOption(pickedOption);
             } catch (InputMismatchException e) {
                 System.err.println(INVALID_OPTION);
-                //scanner.next(); // se curata scanner-ul de input gresit
             }
         }
         while (pickedOption < 0 || pickedOption > 2);
@@ -345,7 +339,7 @@ public class Atm {
     private void performWithdrawForIndirectClient(String[] currencyTokens) {
         try {
             int amount = Integer.parseInt(currencyTokens[0]);
-            String currency = currencyTokens[1];
+            String currency = currencyTokens[1].toLowerCase();
             if (isSufficientAmount(amount, currency)) {
                 System.out.println(TAKE_MONEY);
             }

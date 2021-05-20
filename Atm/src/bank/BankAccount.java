@@ -10,6 +10,7 @@ public class BankAccount {
     private double euro;
     private double pounds;
     private double dollar;
+    private final String INSUFFICENT_FUNDS = "Fonduri insuficiente.";
 
     public BankAccount(String id, String pin, boolean blocked, double ron, double euro, double pounds, double dollar) {
         this.id = id;
@@ -50,7 +51,6 @@ public class BankAccount {
     }
 
     public boolean withdrawAmount(double quantity, String currency) {
-        System.out.println("WITHDRAWING>>");//aici as putea sa updatez mereu userul dupa switch()
         if (quantity <= 0) {
             System.err.println("Ati introdus o valoare gresita pentru suma.");
             return false;
@@ -63,7 +63,7 @@ public class BankAccount {
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 } else {
-                    System.err.println("Fonduri insuficiente.");
+                    System.err.println(INSUFFICENT_FUNDS);
                 }
                 break;
             case "€":
@@ -73,7 +73,7 @@ public class BankAccount {
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 } else {
-                    System.err.println("Fonduri insuficiente.");
+                    System.err.println(INSUFFICENT_FUNDS);
                 }
                 break;
             case "£":
@@ -83,7 +83,7 @@ public class BankAccount {
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 } else {
-                    System.err.println("Fonduri insuficiente.");
+                    System.err.println(INSUFFICENT_FUNDS);
                 }
                 break;
             case "$":
@@ -93,7 +93,7 @@ public class BankAccount {
                     updateUserInConfigFile(this.id, toBeReplaced);
                     return true;
                 } else {
-                    System.err.println("Fonduri insuficiente.");
+                    System.err.println(INSUFFICENT_FUNDS);
                 }
                 break;
             default:
@@ -105,7 +105,6 @@ public class BankAccount {
     }
 
     public void depositAmount(int amount, String currency) {
-        System.out.println("DEPOSITING>>>");
         switch (currency) {
             case "ron":
                 this.ron += amount;
