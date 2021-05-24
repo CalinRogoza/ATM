@@ -11,6 +11,10 @@ public class BankAccount {
     private double pounds;
     private double dollar;
     private final String INSUFFICENT_FUNDS = "Fonduri insuficiente.";
+    private final String INVALID_CURRENCY = "Valuta inexistenta.";
+    private final String WRONG_VALUE_FOR_AMOUNT = "Ati introdus o valoare gresita pentru suma.";
+    private final String FILE_UPDATE_PROBLEM = "Nu s-a putut realiza actualizarea fisierului.";
+    private final String PATH_TO_USERS_FILE = "/src/users.txt";
 
     public BankAccount(String id, String pin, boolean blocked, double ron, double euro, double pounds, double dollar) {
         this.id = id;
@@ -23,7 +27,7 @@ public class BankAccount {
     }
 
     public void updateUserInConfigFile(String id, String toBeReplaced) {
-        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")))) {
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + PATH_TO_USERS_FILE)))) {
             StringBuffer inputBuffer = new StringBuffer();
             String line = bufferedReader.readLine();
             while (line != null) {
@@ -37,11 +41,11 @@ public class BankAccount {
                 inputBuffer.append('\n');
                 line = bufferedReader.readLine();
             }
-            FileOutputStream fileOut = new FileOutputStream(new File(".").getCanonicalPath() + "/src/users.txt");
+            FileOutputStream fileOut = new FileOutputStream(new File(".").getCanonicalPath() + PATH_TO_USERS_FILE);
             fileOut.write(inputBuffer.toString().getBytes());
             fileOut.close();
         } catch (Exception e) {
-            System.err.println("Nu s-a putut realiza actualizarea fisierului.");
+            System.err.println(FILE_UPDATE_PROBLEM);
             System.err.flush();
         }
     }
@@ -52,7 +56,7 @@ public class BankAccount {
 
     public boolean withdrawAmount(double quantity, String currency) {
         if (quantity <= 0) {
-            System.err.println("Ati introdus o valoare gresita pentru suma.");
+            System.err.println(WRONG_VALUE_FOR_AMOUNT);
             return false;
         }
         switch (currency) {
@@ -97,7 +101,7 @@ public class BankAccount {
                 }
                 break;
             default:
-                System.err.println("Valuta inexistenta!");
+                System.err.println(INVALID_CURRENCY);
                 System.err.flush();
                 return false;
         }

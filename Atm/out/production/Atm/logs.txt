@@ -1,49 +1,13 @@
-123, pin=1234, blocked=false, ron=1424.0, euro=100.0, lire=110.0, dollar=200.0 | 2,[100, ron]
-unregistered user | 2,[100, £]
-123, pin=1234, blocked=false, ron=1424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-045, pin=2345, blocked=false, ron=1200.0, euro=120.0, lire=200.0, dollar=100.0 | 2,[100, ron]
-123, pin=1234, blocked=false, ron=1424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-unregistered user | 0,[2000, £]
-unregistered user | 1,[200, ron]
-unregistered user | 0,[200, ron]
-unregistered user | 0,[200, ron]
-unregistered user | 1,[200, ron]
-unregistered user | 0,[100, ron]
-045, pin=2345, blocked=false, ron=1200.0, euro=120.0, lire=200.0, dollar=100.0 | 1,[2000, ron]
-unregistered user | 0,[100, r]
-unregistered user | 2,[100, £]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 2,[1000, ron]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 1,[950, ron]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-unregistered user | 1,[100, ron]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-unregistered user | 0,[100, ron]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 2,[100, ron]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 3,[100, £]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-unregistered user | 1,[100, ron]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 3,[100, $]
-unregistered user | 0,[100, r]
-unregistered user | 0,[100, ron]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 0,[]
-unregistered user | 0,[100, ron]
-unregistered user | 0,[100, ron]
-unregistered user | 0,[50, ron]
-unregistered user | 0,[50, ron]
-unregistered user | 0,[100, ron]
-unregistered user | 0,[100, ron]
-unregistered user | 0,[100, ron]
-123, pin=1234, blocked=false, ron=2524.0, euro=100.0, lire=110.0, dollar=200.0 | 3,[100£]
-045, pin=2345, blocked=false, ron=1200.0, euro=120.0, lire=200.0, dollar=100.0 | 0,[]
-045, pin=2345, blocked=false, ron=1200.0, euro=120.0, lire=200.0, dollar=100.0 | 3,[100, £]
-123, pin=1234, blocked=false, ron=2024.0, euro=100.0, lire=110.0, dollar=200.0 | 1,[500, ron]
-123, pin=1234, blocked=false, ron=2024.0, euro=100.0, lire=110.0, dollar=180.0 | 1,[20, $]
-unregistered user | 1,[200, ron]
-123, pin=1234, blocked=false, ron=2024.0, euro=100.0, lire=110.0, dollar=180.0 | 3,[100, €]
-123, pin=1234, blocked=false, ron=2024.0, euro=100.0, lire=110.0, dollar=180.0 | 3,[1000, €]
-123, pin=1234, blocked=false, ron=2024.0, euro=100.0, lire=110.0, dollar=180.0 | 0,[]
+unregistered user | 0,[200, £] | 24-05-2021 08:58:18
+123, pin=1234, blocked=false, ron=1924.0, euro=100.0, lire=110.0, dollar=480.0 | 2,[300, $] | 24-05-2021 08:58:39
+045, pin=2345, blocked=false, ron=1200.0, euro=80.0, lire=200.0, dollar=100.0 | 3,[100, £] | 24-05-2021 09:00:01
+unregistered user | 2,[100, $] | 24-05-2021 09:00:16
+unregistered user | 1,[1000, ron] | 24-05-2021 09:00:26
+123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=480.0 | 2,[500, ron] | 24-05-2021 09:00:43
+045, pin=2345, blocked=false, ron=850.0, euro=80.0, lire=200.0, dollar=100.0 | 1,[350, ron] | 24-05-2021 09:00:59
+045, pin=2345, blocked=false, ron=2550.0, euro=80.0, lire=200.0, dollar=100.0 | 2,[1700, ron] | 24-05-2021 09:01:31
+045, pin=2345, blocked=false, ron=2000.0, euro=80.0, lire=200.0, dollar=100.0 | 1,[550, ron] | 24-05-2021 09:01:49
+unregistered user | 0,[200, €] | 24-05-2021 09:02:05
+unregistered user | 1,[550, €] | 24-05-2021 09:02:14
+123, pin=1234, blocked=false, ron=2424.0, euro=100.0, lire=110.0, dollar=480.0 | 3,[100, $] | 24-05-2021 09:02:36
+123, pin=1234, blocked=false, ron=2424.0, euro=900.0, lire=110.0, dollar=480.0 | 2,[800, €] | 24-05-2021 09:03:05

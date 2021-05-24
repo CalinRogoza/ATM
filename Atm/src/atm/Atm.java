@@ -3,6 +3,8 @@ package atm;
 import bank.BankAccount;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Atm {
@@ -12,7 +14,12 @@ public class Atm {
     private final String CANT_WITHDRAW_AMOUNT = "Nu se poate extrage aceasta suma.";
     private final String INVALID_CURRENCY = "Valuta inexistenta.";
     private final String TAKE_MONEY = "Va rugam ridicati banii. La revedere!";
+    private final String MONEY_DEPOSITED = "Banii au fost depozitati. La revedere!";
     private final String FILE_READ_PROBLEM = "A aparut o problema la citirea fisierului.";
+    private final String INVALID_FORMAT = "Ati introdus datele intr-un format invalid.";
+    private final String INVALID_NUMBER_OF_ARGUMENTS = "Numar invalid de argumente.";
+    private final String PATH_TO_LOGS_FILE = "/src/logs.txt";
+    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private double defaultRonAmount = 100000.0d;
     private double defaultEuroAmount = 10000.0d;
     private double defaultPoundAmount = 10000.0d;
@@ -43,9 +50,9 @@ public class Atm {
 
     private void writeLogToFile(String text) {
         try {
-            String f1 = new File(".").getCanonicalPath() + "/src/logs.txt";
-            FileWriter fileWritter = new FileWriter(f1, true);
-            BufferedWriter bw = new BufferedWriter(fileWritter);
+            String f1 = new File(".").getCanonicalPath() + PATH_TO_LOGS_FILE;
+            FileWriter fileWriter = new FileWriter(f1, true);
+            BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(text);
             bw.close();
         } catch (IOException e) {
@@ -164,21 +171,21 @@ public class Atm {
                 try {
                     adminTrace(tokens[1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Numar invalid de argumente.");
+                    System.err.println(INVALID_NUMBER_OF_ARGUMENTS);
                 }
                 break;
             case "ADMIN_UNLOCK":
                 try {
                     adminUnlock(tokens[1], tokens[2]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Numar invalid de argumente.");
+                    System.err.println(INVALID_NUMBER_OF_ARGUMENTS);
                 }
                 break;
             case "ADMIN_ADD_MONEY":
                 try {
                     addMoneyAdmin(tokens[1], tokens[2]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Numar invalid de argumente.");
+                    System.err.println(INVALID_NUMBER_OF_ARGUMENTS);
                 }
                 break;
             case "ADMIN_WITHDRAW_MONEY":
@@ -186,7 +193,7 @@ public class Atm {
                 try {
                     withdrawMoneyAdmin(tokens[1], tokens[2]);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Numar invalid de argumente.");
+                    System.err.println(INVALID_NUMBER_OF_ARGUMENTS);
                 }
                 break;
         }
@@ -243,7 +250,7 @@ public class Atm {
     }
 
     private String[] getAccountDataById(String id) {
-        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")));) {
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(".").getCanonicalPath() + "/src/users.txt")))) {
             String line = bufferedReader.readLine();
             while (!line.equals("")) {
                 String[] tokens = line.split(",");
@@ -270,7 +277,6 @@ public class Atm {
         while (counter < 3) {
             System.out.println("PIN: ");
             String searchedPin = scanner.nextLine();
-            System.out.println(searchedId + " " + searchedPin);
             ++counter;
             if (searchedPin.equals(accountDataTokens[1])) {
                 return true;
@@ -351,7 +357,7 @@ public class Atm {
                 System.out.println(TAKE_MONEY);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Ati introdus datele intr-un format invalid.");
+            System.err.println(INVALID_FORMAT);
             System.err.flush();
         }
     }
@@ -361,10 +367,10 @@ public class Atm {
             int amount = Integer.parseInt(currencyTokens[0]);
             String currency = currencyTokens[1];
             if (canDepositInAtm(amount, currency)) {
-                System.out.println("Banii au fost depozitati. La revedere!");
+                System.out.println(MONEY_DEPOSITED);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Ati introdus datele intr-un format invalid.");
+            System.err.println(INVALID_FORMAT);
             System.err.flush();
         }
     }
@@ -379,7 +385,7 @@ public class Atm {
                 }
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Ati introdus datele intr-un format invalid.");
+            System.err.println(INVALID_FORMAT);
             System.err.flush();
         }
     }
@@ -410,10 +416,10 @@ public class Atm {
             String currency = currencyTokens[1];
             if (canDepositInAtm(amount, currency)) {
                 bankAccount.depositAmount(amount, currency);
-                System.out.println("Banii au fost depozitati. La revedere!");
+                System.out.println(MONEY_DEPOSITED);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Ati introdus datele intr-un format invalid.");
+            System.err.println(INVALID_FORMAT);
             System.err.flush();
         }
     }
@@ -459,11 +465,12 @@ public class Atm {
                 System.out.println(TAKE_MONEY);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Ati introdus datele intr-un format invalid.");
+            System.err.println(INVALID_FORMAT);
         }
     }
 
     public void run() {
+
         loadExchangeRatesFromFile();
         System.out.println("Sunteti client al bancii noastre? (0/1)");
         boolean answer = isClientOfTheBank();
@@ -495,7 +502,8 @@ public class Atm {
                         performExchange(currencyTokens);
                         break;
                 }
-                writeLogToFile(bankAccount.toString() + " | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
+                LocalDateTime dateTime = LocalDateTime.now();
+                writeLogToFile(bankAccount.toString() + " | " + chosenOption + "," + Arrays.toString(currencyTokens) + " | " + dateTime.format(FORMATTER) + "\n");
             }
         } else {
             int chosenOption = performActionsForIndirectClient();
@@ -517,7 +525,8 @@ public class Atm {
                     performExchange(currencyTokens);
                     break;
             }
-            writeLogToFile("unregistered user | " + chosenOption + "," + Arrays.toString(currencyTokens) + "\n");
+            LocalDateTime dateTime = LocalDateTime.now();
+            writeLogToFile("unregistered user | " + chosenOption + "," + Arrays.toString(currencyTokens) + " | " + dateTime.format(FORMATTER) + "\n");
         }
 //        scanner.close();
     }
